@@ -1,5 +1,6 @@
-package com.github.rybalkin_an.app;
+package com.github.rybalkin_an.app.mockmvc;
 
+import com.github.rybalkin_an.app.testdata.TestUser;
 import com.github.rybalkin_an.app.user.controller.UserController;
 import com.github.rybalkin_an.app.user.model.User;
 import com.github.rybalkin_an.app.user.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -25,7 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserServiceTests {
+@TestPropertySource(locations = "classpath:test-application.properties")
+class MockMvcUserServiceTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,12 +44,11 @@ class UserServiceTests {
 
     @Test
     public void testDeleteUser() throws Exception {
-        UUID userId = UUID.randomUUID();
+        User user = new TestUser();
 
-        User user = new User();
-        user.setId(userId);
+        UUID userId = user.getId();
 
-//		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         mockMvc.perform(delete("/api/users/{id}", userId)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -65,11 +67,9 @@ class UserServiceTests {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        // Log the response status
         int responseStatus = result.getResponse().getStatus();
         System.out.println("Response Status: " + responseStatus);
 
-        // Ensure that the response status is 404
         assertThat(responseStatus).isEqualTo(404);
     }
 

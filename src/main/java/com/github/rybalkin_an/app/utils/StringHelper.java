@@ -1,4 +1,4 @@
-package com.github.rybalkin_an.app.user.utils;
+package com.github.rybalkin_an.app.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

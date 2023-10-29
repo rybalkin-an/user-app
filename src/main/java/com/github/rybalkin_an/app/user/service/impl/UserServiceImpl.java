@@ -5,7 +5,7 @@ import com.github.rybalkin_an.app.user.exception.NotFoundException;
 import com.github.rybalkin_an.app.user.model.User;
 import com.github.rybalkin_an.app.user.repository.UserRepository;
 import com.github.rybalkin_an.app.user.service.UserService;
-import com.github.rybalkin_an.app.user.utils.StringHelper;
+import com.github.rybalkin_an.app.utils.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
