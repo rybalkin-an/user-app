@@ -7,4 +7,6 @@ import java.util.UUID;
 
 @Service
 public interface UserService extends CrudService<UUID, User> {
+
+    User saveUserDataToUser(UUID id);
 }
