@@ -1,61 +1,63 @@
 package com.github.rybalkin_an.app.restassured.user;
 
 import com.github.rybalkin_an.app.restassured.BaseRequest;
+import com.github.rybalkin_an.app.restassured.user.steps.UserApi;
 import com.github.rybalkin_an.app.testdata.TestUser;
 import com.github.rybalkin_an.app.user.model.User;
-import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.UUID;
 
-import static io.restassured.RestAssured.given;
-import static org.apache.http.HttpStatus.SC_CREATED;
-import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
 
 
 public class UserTest extends BaseRequest {
 
-    private final String path = "/users";
+    private final UserApi userApi = new UserApi();
 
     @Test
     void givenUser_whenPostUser_thenUserCreated(){
         User givenUser = new TestUser();
 
-        User createdUser = createUser(givenUser)
-                .statusCode(SC_CREATED)
-                .and()
-                .extract().as(User.class);
+        User createdUser = userApi.create(givenUser);
 
         validateUser(createdUser, givenUser);
     }
 
     @Test
     void whenGetUsers_thenReturnEmptyList(){
-        given(requestSpec)
-                .when()
-                .get(path)
-                .then()
-                .assertThat()
-                .statusCode(SC_OK)
-                .and()
-                .body("$", is(empty()));
+        List<User> userList = userApi.findAll();
+
+        assertThat(userList).isEmpty();
     }
 
     @Test
     void givenCreatedUser_whenGetUsers_thenUserCreated(){
         User givenUser = new TestUser();
 
-        createUser(givenUser);
+        userApi.create(givenUser);
 
-        List<User> userList = getUsers();
+        List<User> userList = userApi.findAll();
 
         User createdUser = userList.get(0);
 
         validateUser(createdUser, givenUser);
+    }
+
+    @Test
+    void givenCreatedUser_whenDeleteUser_then204(){
+        User givenUser = new TestUser();
+
+        userApi.create(givenUser);
+
+        List<User> userList = userApi.findAll();
+        UUID id = userList.get(0).getId();
+
+        User createdUser = userApi.findById(id);
+        validateUser(createdUser, givenUser);
+
+        userApi.delete(id);
     }
 
     private void validateUser(User createdUser, User givenUser){
@@ -67,19 +69,4 @@ public class UserTest extends BaseRequest {
         assertThat(createdUser.getVersion()).isEqualTo(null);
     }
 
-    private ValidatableResponse createUser(User givenUser){
-        return given(requestSpec)
-                .body(givenUser)
-                .when()
-                .post(path)
-                .then();
-    }
-
-    private List<User> getUsers(){
-        return given(requestSpec)
-                .when()
-                .get(path)
-                .then()
-                .extract().jsonPath().getList(".", User.class);
-    }
 }
