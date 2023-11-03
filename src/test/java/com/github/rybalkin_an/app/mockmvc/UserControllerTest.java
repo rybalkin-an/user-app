@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -22,19 +21,20 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("h2")
 @WebMvcTest(controllers = UserController.class)
 class UserControllerTest {
 
     private final String url = "/api/users";
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private UserServiceImpl userService;
 
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     public void givenUser_whenCreateUser_thenUserCreated() throws Exception {
@@ -44,7 +44,7 @@ class UserControllerTest {
 
         MvcResult result = this.mockMvc.perform(post(url)
                         .content(userJson)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         int responseStatus = result.getResponse().getStatus();
@@ -56,12 +56,25 @@ class UserControllerTest {
     }
 
     @Test
+    public void givenUserWithoutFirstName_whenCreateUser_then400() throws Exception {
+        User givenUser = new TestUser();
+        givenUser.setFirstName(null);
+        String userJson = mapper.writeValueAsString(givenUser);
+        when(userService.create(any(User.class))).thenReturn(givenUser);
+
+        this.mockMvc.perform(post(url)
+                        .content(userJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void givenUserId_whenGetUserById_thenReturnUser() throws Exception {
         User givenUser = new TestUser();
         when(userService.findById(givenUser.getId())).thenReturn(givenUser);
 
-        MvcResult result = this.mockMvc.perform(get(url+"/{id}", givenUser.getId())
-                .contentType(MediaType.APPLICATION_JSON))
+        MvcResult result = this.mockMvc.perform(get(url + "/{id}", givenUser.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         int responseStatus = result.getResponse().getStatus();
@@ -69,7 +82,7 @@ class UserControllerTest {
         User createdUser = mapper.readValue(responseBody, User.class);
 
         assertThat(responseStatus).isEqualTo(200);
-        validateUser(createdUser, givenUser);
+        validateUser(givenUser, createdUser);
     }
 
     @Test
@@ -87,12 +100,12 @@ class UserControllerTest {
         assertThat(responseBody).isEqualTo("Resource ID not found.");
     }
 
-    private void validateUser(User actualResult, User expectedResult){
-        assertThat(expectedResult.getId()).isEqualTo(actualResult.getId());
-        assertThat(expectedResult.getBirthdate()).isEqualTo(actualResult.getBirthdate());
-        assertThat(expectedResult.getFirstName()).isEqualTo(actualResult.getFirstName());
-        assertThat(expectedResult.getLastName()).isEqualTo(actualResult.getLastName());
-        assertThat(expectedResult.getRegistrationDate()).isEqualTo(actualResult.getRegistrationDate());
-        assertThat(expectedResult.getVersion()).isEqualTo(null);
+    private void validateUser(User givenUser, User createdUser){
+        assertThat(createdUser.getId()).isEqualTo(givenUser.getId());
+        assertThat(createdUser.getBirthdate()).isEqualTo(givenUser.getBirthdate());
+        assertThat(createdUser.getFirstName()).isEqualTo(givenUser.getFirstName());
+        assertThat(createdUser.getLastName()).isEqualTo(givenUser.getLastName());
+        assertThat(createdUser.getRegistrationDate()).isEqualTo(givenUser.getRegistrationDate());
+        assertThat(createdUser.getVersion()).isEqualTo(null);
     }
 }
