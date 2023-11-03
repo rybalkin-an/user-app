@@ -6,6 +6,8 @@ server:
   port: 8080
 
 spring:
+  profiles:
+    active: postgres
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: admin
@@ -17,4 +19,7 @@ spring:
       ddl-auto: update
       dialect: org.hibernate.dialect.PostgreSQL10Dialect
       format_sql: true
+  flyway:
+    locations: classpath:/db/migration/postgres
+
 

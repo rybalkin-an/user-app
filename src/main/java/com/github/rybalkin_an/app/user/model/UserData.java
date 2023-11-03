@@ -16,5 +16,5 @@ public class UserData {
 
     private String title;
 
-    private String completed;
+    private Boolean completed;
 }

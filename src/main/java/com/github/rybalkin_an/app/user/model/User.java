@@ -41,6 +41,6 @@ public class User {
 
     @Version
     @JsonIgnore
-    private int version;
+    private Integer version;
 
 }

@@ -1,5 +1,6 @@
 package com.github.rybalkin_an.app.user.controller;
 
+import com.github.rybalkin_an.app.user.exception.NotFoundException;
 import com.github.rybalkin_an.app.user.model.User;
 import com.github.rybalkin_an.app.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;

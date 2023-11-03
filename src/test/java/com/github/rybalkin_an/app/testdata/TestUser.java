@@ -1,6 +1,7 @@
 package com.github.rybalkin_an.app.testdata;
 
 import com.github.rybalkin_an.app.user.model.User;
+import com.github.rybalkin_an.app.user.model.UserData;
 
 import java.util.UUID;
 
@@ -12,6 +13,8 @@ public class TestUser extends User {
     private String firstName;
     private String lastName;
     private String birthdate;
+
+    private UserData userData;
     private String registrationDate;
     private int version;
 
@@ -55,7 +58,7 @@ public class TestUser extends User {
         this.registrationDate = registrationDate;
     }
 
-    public int getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
@@ -64,11 +67,17 @@ public class TestUser extends User {
     }
 
     public TestUser() {
+        UserData userData = new UserData();
+        userData.setUserId(1L);
+        userData.setId(1L);
+        userData.setCompleted(false);
+        userData.setTitle("test");
         this.id =  UUID.randomUUID();
         this.firstName = "Tim";
         this.lastName = "Armstrong";
         this.birthdate = "1965-11-25";
         this.registrationDate = getCurrentDate();
         this.version = 1;
+        this.userData = userData;
     }
 }
