@@ -38,9 +38,10 @@ public class UserTest extends BaseRequest {
 
         userApi.create(givenUser);
 
-        List<User> userList = userApi.findAll();
-
-        User createdUser = userList.get(0);
+        User createdUser = userApi.findAll()
+                .stream()
+                .findFirst()
+                .orElseThrow();
 
         validateUser(createdUser, givenUser);
     }
@@ -51,8 +52,10 @@ public class UserTest extends BaseRequest {
 
         userApi.create(givenUser);
 
-        List<User> userList = userApi.findAll();
-        UUID id = userList.get(0).getId();
+        UUID id = userApi.findAll()
+                .stream().map(User::getId)
+                .findFirst()
+                .orElseThrow();
 
         User createdUser = userApi.findById(id);
         validateUser(createdUser, givenUser);
