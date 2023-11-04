@@ -4,6 +4,7 @@ import com.github.rybalkin_an.app.restassured.BaseRequest;
 import com.github.rybalkin_an.app.restassured.user.steps.UserApi;
 import com.github.rybalkin_an.app.testdata.TestUser;
 import com.github.rybalkin_an.app.user.model.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -14,7 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserTest extends BaseRequest {
 
-    private final UserApi userApi = new UserApi();
+    private UserApi userApi;
+
+    @BeforeEach
+    public void setUp() {
+        userApi = new UserApi(randomServerPort);
+    }
 
     @Test
     void givenUser_whenPostUser_thenUserCreated(){

@@ -17,11 +17,16 @@ public class UserApi implements UserService {
     private final String path = "/users";
     private final String url = "http://localhost/api";
 
-    private final RequestSpecification requestSpec = new RequestSpecBuilder()
-            .setContentType(JSON)
-            .setAccept(JSON)
-            .setBaseUri(url)
-            .build();
+    private final RequestSpecification requestSpec;
+
+    public UserApi(int port) {
+        this.requestSpec = new RequestSpecBuilder()
+                .setPort(port)
+                .setContentType(JSON)
+                .setAccept(JSON)
+                .setBaseUri(url)
+                .build();
+    }
 
     @Override
     public List<User> findAll() {
