@@ -11,6 +11,7 @@ import com.github.rybalkin_an.app.utils.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 import java.util.UUID;
@@ -60,14 +61,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUserDataToUser(UUID id) {
         User dbUser = this.findById(id);
-        UserData userData = externalApiClient.getUserData();
-        if (userData.getUserId() == null ||
-                userData.getTitle() == null ||
-                userData.getId() == null ||
-                userData.getCompleted() == null) {
-            throw new BusinessException("User data is not exist");
+        try {
+            UserData userData = externalApiClient.getUserData();
+            if (userData.getUserId() == null ||
+                    userData.getTitle() == null ||
+                    userData.getId() == null ||
+                    userData.getCompleted() == null) {
+                throw new BusinessException("User data is not exist");
+            }
+            dbUser.setUserData(userData);
+            return this.userRepository.save(dbUser);
+        } catch (WebClientResponseException e) {
+            throw new BusinessException("External service thrown an exception");
         }
-        dbUser.setUserData(userData);
-        return this.userRepository.save(dbUser);
     }
 }

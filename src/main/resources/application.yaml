@@ -1,6 +1,7 @@
-http.clients:
-  todos:
-    url: https://jsonplaceholder.typicode.com/todos/
+#http.clients:
+#  todos:
+#    url: https://jsonplaceholder.typicode.com/todos/
+#    port: 80
 
 spring:
   datasource:

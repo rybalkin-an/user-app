@@ -85,7 +85,7 @@ public class UserApi implements UserService {
     public User saveUserDataToUser(UUID id) {
         return given(requestSpec)
                 .when()
-                .post(path + "/" + id.toString())
+                .patch(path + "/" + id.toString())
                 .then()
                 .statusCode(SC_OK)
                 .and()
