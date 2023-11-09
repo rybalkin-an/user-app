@@ -9,9 +9,13 @@ import com.github.rybalkin_an.app.user.repository.UserRepository;
 import com.github.rybalkin_an.app.user.service.UserService;
 import com.github.rybalkin_an.app.utils.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.reactive.function.client.support.WebClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,8 +27,21 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    private final ExternalApiClient externalApiClient;
+
     @Autowired
-    private ExternalApiClient externalApiClient;
+    public UserServiceImpl(
+            UserRepository userRepository,
+            WebClient.Builder webClientBuilder,
+            @Value("${external.api.url}") String externalApiUrl) {
+        this.userRepository = userRepository;
+        WebClient webClient = webClientBuilder.baseUrl(externalApiUrl).build();
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
+                .builder(WebClientAdapter.forClient(webClient))
+                .build();
+        this.externalApiClient = httpServiceProxyFactory.createClient(ExternalApiClient.class);
+    }
+
 
     @Transactional(readOnly = true)
     public List<User> findAll() {
@@ -72,7 +89,7 @@ public class UserServiceImpl implements UserService {
             dbUser.setUserData(userData);
             return this.userRepository.save(dbUser);
         } catch (WebClientResponseException e) {
-            throw new BusinessException("External service thrown an exception");
+            throw new BusinessException("An exception was encountered from the external service");
         }
     }
 }

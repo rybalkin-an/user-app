@@ -1,12 +1,12 @@
 package com.github.rybalkin_an.app.user.client;
 
 import com.github.rybalkin_an.app.user.model.UserData;
-import com.maciejwalkowiak.spring.http.annotation.HttpClient;
 import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.service.annotation.HttpExchange;
 
-@HttpClient("todos")
+@HttpExchange
 public interface ExternalApiClient {
 
-    @GetExchange("/1")
+    @GetExchange("/todos/1")
     UserData getUserData();
 }

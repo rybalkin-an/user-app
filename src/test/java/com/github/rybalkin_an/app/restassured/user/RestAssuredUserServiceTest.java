@@ -13,7 +13,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class UserTest extends BaseRequest {
+public class RestAssuredUserServiceTest extends BaseRequest {
 
     private UserApi userApi;
 

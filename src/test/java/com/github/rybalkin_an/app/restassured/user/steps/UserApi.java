@@ -3,6 +3,7 @@ package com.github.rybalkin_an.app.restassured.user.steps;
 import com.github.rybalkin_an.app.user.model.User;
 import com.github.rybalkin_an.app.user.service.UserService;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 import java.util.List;
@@ -90,5 +91,12 @@ public class UserApi implements UserService {
                 .statusCode(SC_OK)
                 .and()
                 .extract().as(User.class);
+    }
+
+    public ValidatableResponse assertSaveUserDataToUser(UUID id) {
+        return given(requestSpec)
+                .when()
+                .patch(path + "/" + id.toString())
+                .then();
     }
 }

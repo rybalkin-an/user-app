@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserController.class)
-class UserControllerTest {
+class MockMvcUserControllerTest {
 
     private final String url = "/api/users";
     private final ObjectMapper mapper = new ObjectMapper();
