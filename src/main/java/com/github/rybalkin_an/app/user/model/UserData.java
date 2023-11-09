@@ -2,6 +2,7 @@ package com.github.rybalkin_an.app.user.model;
 
 
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 

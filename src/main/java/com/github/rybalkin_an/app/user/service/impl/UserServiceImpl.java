@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
             dbUser.setUserData(userData);
             return this.userRepository.save(dbUser);
         } catch (WebClientResponseException e) {
-            throw new BusinessException("An exception was encountered from the external service");
+            throw new BusinessException(e.getMessage());
         }
     }
 }
