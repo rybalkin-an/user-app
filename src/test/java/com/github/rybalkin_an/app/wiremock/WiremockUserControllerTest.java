@@ -3,13 +3,16 @@ package com.github.rybalkin_an.app.wiremock;
 import com.github.rybalkin_an.app.restassured.user.steps.UserApi;
 import com.github.rybalkin_an.app.testdata.TestUser;
 import com.github.rybalkin_an.app.user.model.User;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
 import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -20,10 +23,14 @@ public class WiremockUserControllerTest {
     private UserApi userApi;
 
     @LocalServerPort
-    protected int randomServerPort;
+    private int randomServerPort;
 
     @BeforeEach
     void setupUserApi(){
+        String path = "/todos/1";
+
+        WireMock.stubFor(WireMock.get(path).willReturn(serverError()));
+
         userApi = new UserApi(randomServerPort);
     }
 

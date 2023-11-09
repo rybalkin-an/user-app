@@ -44,6 +44,6 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform {
-
+//        includeTags 'e2e'
     }
 }
