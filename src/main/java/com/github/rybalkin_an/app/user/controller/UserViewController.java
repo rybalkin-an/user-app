@@ -39,6 +39,7 @@ public class UserViewController {
         userService.create(user);
         return "redirect:/users/manage";
     }
+
     @PostMapping("/deleteUser")
     public String deleteUser(@RequestParam UUID userId) {
         userService.delete(userId);
