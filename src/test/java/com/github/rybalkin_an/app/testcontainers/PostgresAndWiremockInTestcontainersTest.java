@@ -24,7 +24,6 @@ public class PostgresAndWiremockInTestcontainersTest {
 //     spring context is up
 //     endpoint call within RestAssured
 
-
     @LocalServerPort
     private int randomServerPort;
 
@@ -40,7 +39,7 @@ public class PostgresAndWiremockInTestcontainersTest {
     }
 
     @Test
-    void testUpdateUser() {
+    void givenMockExternalApi_andUser_whenCallSaveUserDataToUser_thenReturnMockResponse() {
         User givenUser = new TestUser();
         User createdUser = this.userApi.create(givenUser);
         this.userApi.saveUserDataToUser(createdUser.getId());
@@ -53,7 +52,7 @@ public class PostgresAndWiremockInTestcontainersTest {
     }
 
     @Test
-    void givenMockExternalApiInCotainer_whenExternalApi_thenReturnResponse() {
+    void givenMockExternalApi_whenCallExternalApi_thenReturnMockResponse() {
         UserData userData = RestAssured.given().baseUri(apiUrl)
                 .when().get("/todos/1")
                 .then().statusCode(SC_OK).extract().as(UserData.class);

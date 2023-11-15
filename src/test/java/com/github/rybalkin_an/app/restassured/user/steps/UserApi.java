@@ -32,71 +32,53 @@ public class UserApi implements UserService {
     @Override
     public List<User> findAll() {
         return given(requestSpec)
-                .when()
-                .get(path)
-                .then()
-                .statusCode(SC_OK)
-                .extract().jsonPath().getList(".", User.class);
+                .when().get(path)
+                .then().statusCode(SC_OK)
+                .and().extract().jsonPath().getList(".", User.class);
     }
 
     @Override
     public User findById(UUID uuid) {
         return given(requestSpec)
-                .when()
-                .get(path + "/" + uuid.toString())
-                .then()
-                .statusCode(SC_OK)
-                .extract().as(User.class);
+                .when().get(path + "/" + uuid.toString())
+                .then().statusCode(SC_OK)
+                .and().extract().as(User.class);
     }
 
     @Override
     public User create(User entity) {
-        return given(requestSpec)
-                .body(entity)
-                .when()
-                .post(path)
-                .then()
-                .statusCode(SC_CREATED)
-                .and()
-                .extract().as(User.class);
+        return given(requestSpec).body(entity)
+                .when().post(path)
+                .then().statusCode(SC_CREATED)
+                .and().extract().as(User.class);
     }
 
     @Override
     public User update(UUID uuid, User entity) {
-        return given(requestSpec)
-                .body(entity)
-                .when()
-                .post(path + "/" + uuid.toString())
-                .then()
-                .statusCode(SC_OK)
-                .and()
-                .extract().as(User.class);
+        return given(requestSpec).body(entity)
+                .when().post(path + "/" + uuid.toString())
+                .then().statusCode(SC_OK)
+                .and().extract().as(User.class);
     }
 
     @Override
     public void delete(UUID uuid) {
         given(requestSpec)
-                .when()
-                .delete(path + "/" + uuid.toString())
-                .then()
-                .statusCode(SC_NO_CONTENT);
+                .when().delete(path + "/" + uuid.toString())
+                .then().statusCode(SC_NO_CONTENT);
     }
 
     @Override
     public User saveUserDataToUser(UUID id) {
         return given(requestSpec)
-                .when()
-                .patch(path + "/" + id.toString())
-                .then()
-                .statusCode(SC_OK)
-                .and()
-                .extract().as(User.class);
+                .when().patch(path + "/" + id.toString())
+                .then().statusCode(SC_OK)
+                .and().extract().as(User.class);
     }
 
     public ValidatableResponse assertSaveUserDataToUser(UUID id) {
         return given(requestSpec)
-                .when()
-                .patch(path + "/" + id.toString())
+                .when().patch(path + "/" + id.toString())
                 .then();
     }
 }
