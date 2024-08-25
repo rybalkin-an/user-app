@@ -29,5 +29,5 @@ docker compose up
 ```bash
 gradle bootRun
 ```
-3. Access the API documentation in Swagger: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-4. Access the UI: [http://localhost:8080/users/manage](http://localhost:8080/users/manage)
+3. Access the API documentation in Swagger: [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
+4. Access the UI: [http://localhost:8081/users/manage](http://localhost:8081/users/manage)

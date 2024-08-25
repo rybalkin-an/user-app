@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 external:
   api:
     url: https://jsonplaceholder.typicode.com
@@ -18,9 +21,15 @@ spring:
   flyway:
     locations: classpath:/db/migration/postgres
 
+keycloak:
+  server-url: http://localhost:8080/
+  realm: course-bay
+  client-id: spring
+  client-secret: qIMsIVfQLG9Y2DA8izbrlWZDSI3SRVKg
+
 logging:
   level:
-    root: ERROR
-    org.springframework.web: ERROR
+    root: DEBUG
+    org.springframework.web: DEBUG
     org.hibernate.SQL: ERROR
     org.hibernate.type.descriptor.sql: ERROR
