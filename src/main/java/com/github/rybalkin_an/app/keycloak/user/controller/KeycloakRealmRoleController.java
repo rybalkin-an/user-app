@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/keycloak/realm-roles")
-public class KeycloakRealmRoleController {
+@RequestMapping("/realm-roles")
+public class KeycloakRealmRoleController extends BaseKeycloakController {
 
     @Autowired
     private KeycloakRoleService roleService;
