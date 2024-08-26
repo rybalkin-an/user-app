@@ -4,7 +4,6 @@ import com.github.rybalkin_an.app.keycloak.user.dto.UserCreateDTO;
 import com.github.rybalkin_an.app.user.exception.NotFoundException;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,17 +51,21 @@ public class KeycloakUserService {
     }
 
     public String createUser(UserCreateDTO userCreateDTO) {
-        var user = getUserRepresentation(userCreateDTO);
+        UserRepresentation user = getUserRepresentation(userCreateDTO);
 
         try (Response response = keycloak.realm(realm).users().create(user)) {
-            if (response.getStatus() == HttpStatus.CREATED.value()) {
+            int status = response.getStatus();
+
+            if (status == HttpStatus.CREATED.value()) {
                 String location = response.getHeaderString("Location");
-                return location.substring(location.lastIndexOf('/') + 1);
-            } else if (response.getStatus() == HttpStatus.CONFLICT.value()) {
+                return extractUserIdFromLocation(location);
+            } else if (status == HttpStatus.CONFLICT.value()) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
             } else {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create user");
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create user, status: " + status);
             }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while creating user", e);
         }
     }
 
@@ -93,5 +96,12 @@ public class KeycloakUserService {
 
         return usersWithSameUsername.stream().anyMatch(user -> !user.getId().equals(userId)) ||
                 usersWithSameEmail.stream().anyMatch(user -> !user.getId().equals(userId));
+    }
+
+    private String extractUserIdFromLocation(String location) {
+        if (location == null || !location.contains("/")) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid location header: " + location);
+        }
+        return location.substring(location.lastIndexOf('/') + 1);
     }
 }

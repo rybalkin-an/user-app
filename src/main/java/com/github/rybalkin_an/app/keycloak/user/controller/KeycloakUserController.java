@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.keycloak.representations.idm.RealmRepresentation;
+import jakarta.validation.Valid;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class KeycloakUserController {
             @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody UserCreateDTO userCreateDTO) {
+    public ResponseEntity<String> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO) {
         String userId = keycloakUserService.createUser(userCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("User created with ID: " + userId);
     }
