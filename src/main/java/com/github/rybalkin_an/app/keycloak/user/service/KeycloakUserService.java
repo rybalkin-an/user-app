@@ -33,14 +33,6 @@ public class KeycloakUserService {
         }
     }
 
-    public RealmRepresentation getRealms() {
-        try {
-            return keycloak.realm(realm).toRepresentation();
-        } catch (NotFoundException e) {
-            throw new NotFoundException();
-        }
-    }
-
     public void updateUser(String id, UserRepresentation updatedUser) {
         try {
             var existingUser = getUserById(id);
