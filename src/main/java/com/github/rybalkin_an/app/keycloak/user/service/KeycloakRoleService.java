@@ -69,10 +69,8 @@ public class KeycloakRoleService {
             RoleRepresentation role = getRoleByName(roleName);
             keycloak.realm(realm).users().get(userId).roles().realmLevel().add(List.of(role));
         } catch (ResponseStatusException e) {
-            // Re-throw ResponseStatusException for handling specific scenarios
             throw e;
         } catch (Exception e) {
-            // Handle other exceptions with a generic error message
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Failed to assign role to user");
         }

@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
-public class KeycloakUserController extends BaseKeycloakController {
+@RequestMapping("/api/keycloak/users")
+public class KeycloakUserController {
 
     @Autowired
     private KeycloakUserService keycloakUserService;

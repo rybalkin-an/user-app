@@ -5,9 +5,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -16,26 +24,41 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers("/resources/member").hasRole("MEMBER")
-                                .requestMatchers("/resources/guest").hasRole("GUEST")
-                                .requestMatchers("/api/keycloak/auth/token").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .httpBasic(withDefaults())
-                .logout(LogoutConfigurer::permitAll
-                )
-                .csrf(AbstractHttpConfigurer::disable
-                );
-
-        return http.build();
+    public JwtDecoder jwtDecoder() {
+        String jwkSetUri = "http://localhost:8080/realms/course-bay/protocol/openid-connect/certs";
+        return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/resources/static/**");
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        final JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(source -> mapAuthorities(source.getClaims()));
+        return converter;
+    }
+
+    private List<GrantedAuthority> mapAuthorities(final Map<String, Object> attributes) {
+        final Map<String, Object> realmAccess =
+                ((Map<String, Object>) attributes.getOrDefault("realm_access", Collections.emptyMap()));
+        final Collection<String> roles =
+                ((Collection<String>) realmAccess.getOrDefault("roles", Collections.emptyList()));
+        return roles.stream()
+                .map(role -> (GrantedAuthority) new SimpleGrantedAuthority("ROLE_" + role))
+                .toList();
+    }
+
+    @Bean
+    public SecurityFilterChain oauthFilterChain(final HttpSecurity http) throws Exception {
+        return http.cors(withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/resources/member").hasRole("MEMBER")
+                        .requestMatchers("/resources/guest").hasRole("GUEST")
+                        .requestMatchers("/api/keycloak/auth/openid").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                )
+                .build();
     }
 }

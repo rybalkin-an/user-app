@@ -2,6 +2,7 @@ package com.github.rybalkin_an.app.keycloak.user.service;
 
 import com.github.rybalkin_an.app.keycloak.user.dto.UserCreateDTO;
 import com.github.rybalkin_an.app.user.exception.NotFoundException;
+import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
 
