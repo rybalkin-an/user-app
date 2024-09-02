@@ -1,5 +1,6 @@
 package com.github.rybalkin_an.app.keycloak.user.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,9 +24,15 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${keycloak.server-url}")
+    private String serverUrl;
+
+    @Value("${keycloak.realm}")
+    private String realm;
+
     @Bean
     public JwtDecoder jwtDecoder() {
-        String jwkSetUri = "http://localhost:8080/realms/course-bay/protocol/openid-connect/certs";
+        String jwkSetUri = serverUrl + "/realms/" + realm + "/protocol/openid-connect/certs";
         return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
     }
 
@@ -51,8 +58,7 @@ public class SecurityConfig {
         return http.cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/resources/member").hasRole("MEMBER")
                         .requestMatchers("/resources/guest").hasRole("GUEST")
                         .requestMatchers("/api/keycloak/auth/openid").permitAll()

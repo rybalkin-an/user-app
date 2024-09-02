@@ -2,6 +2,7 @@ package com.github.rybalkin_an.app.keycloak.user.controller;
 
 import com.github.rybalkin_an.app.keycloak.user.service.KeycloakRoleService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/keycloak/realm-roles")
+@Tag(name = "Keycloak Realm", description = "APIs for Realm management using Keycloak")
 public class KeycloakRealmRoleController {
 
     @Autowired

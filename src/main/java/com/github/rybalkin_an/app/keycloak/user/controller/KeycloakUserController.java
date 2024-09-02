@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/keycloak/users")
+@Tag(name = "Keycloak User Controller", description = "APIs for user management using Keycloak")
 public class KeycloakUserController {
 
     @Autowired

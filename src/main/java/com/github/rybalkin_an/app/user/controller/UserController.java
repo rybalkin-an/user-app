@@ -26,7 +26,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/users")
-@Tag(name = "Users Controller", description = "RESTful API for managing users.")
+@Tag(name = "Users Controller", description = "RESTful API for managing users. (without keycloak)")
 public record UserController(UserService userService) {
 
     @GetMapping
