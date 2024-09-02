@@ -51,6 +51,8 @@ public class SecurityConfig {
         return http.cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/resources/member").hasRole("MEMBER")
                         .requestMatchers("/resources/guest").hasRole("GUEST")
                         .requestMatchers("/api/keycloak/auth/openid").permitAll()
