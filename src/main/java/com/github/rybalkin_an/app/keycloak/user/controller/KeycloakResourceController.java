@@ -22,15 +22,8 @@ public class KeycloakResourceController {
     @Secured("MEMBER")
     @GetMapping("/member")
     public String getMemberResource() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        System.out.println("User Roles: ");
-        for (GrantedAuthority authority : authorities) {
-            System.out.println(authority.getAuthority());
-        }
-
-        return "Member resource accessed";    }
+        return "Member resource accessed";
+    }
 
     @Operation(summary = "Get Guest Resource", security = @SecurityRequirement(name = "bearerAuth"))
     @Secured("GUEST")
