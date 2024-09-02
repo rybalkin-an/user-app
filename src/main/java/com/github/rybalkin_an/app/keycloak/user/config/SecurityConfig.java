@@ -62,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers("/resources/member").hasRole("MEMBER")
                         .requestMatchers("/resources/guest").hasRole("GUEST")
                         .requestMatchers("/api/keycloak/auth/openid").permitAll()
+                        .requestMatchers("/api/users/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
