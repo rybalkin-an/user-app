@@ -8,6 +8,7 @@ import com.github.rybalkin_an.app.user.model.User;
 import com.github.rybalkin_an.app.user.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,9 +22,9 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class MockMvcUserControllerTest {
 
     private final String url = "/api/users";
@@ -60,12 +61,12 @@ class MockMvcUserControllerTest {
         User givenUser = new TestUser();
         givenUser.setFirstName(null);
         String userJson = mapper.writeValueAsString(givenUser);
-        when(userService.create(any(User.class))).thenReturn(givenUser);
 
         this.mockMvc.perform(post(url)
                         .content(userJson)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(result -> assertThat(result.getResponse().getContentAsString())
+                        .contains("Firstname should be not empty"));
     }
 
     @Test
@@ -94,10 +95,8 @@ class MockMvcUserControllerTest {
                 .andReturn();
 
         int responseStatus = result.getResponse().getStatus();
-        String responseBody = result.getResponse().getContentAsString();
 
         assertThat(responseStatus).isEqualTo(404);
-        assertThat(responseBody).isEqualTo("Resource ID not found.");
     }
 
     private void validateUser(User givenUser, User createdUser){

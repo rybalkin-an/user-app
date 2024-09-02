@@ -8,6 +8,7 @@ import com.github.rybalkin_an.app.user.model.UserData;
 import com.github.rybalkin_an.app.user.repository.UserRepository;
 import com.github.rybalkin_an.app.user.service.UserService;
 import com.github.rybalkin_an.app.utils.StringHelper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -53,13 +54,13 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-    public User create(User userToCreate) {
+    public User create(@Valid User userToCreate) {
         userToCreate.setRegistrationDate(StringHelper.getCurrentDate());
         userToCreate.setVersion(1);
         return this.userRepository.save(userToCreate);
     }
 
-    public User update(UUID id, User userToUpdate) {
+    public User update(UUID id, @Valid User userToUpdate) {
         User dbUser = this.findById(id);
         if (!dbUser.getId().equals(userToUpdate.getId())) {
             throw new BusinessException("Update IDs must be the same.");
