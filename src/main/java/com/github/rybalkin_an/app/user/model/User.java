@@ -2,6 +2,7 @@ package com.github.rybalkin_an.app.user.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class User {
     @NotEmpty(message = "Lastname should be not empty")
     private String lastName;
 
+    @Nullable
     @JdbcTypeCode(SqlTypes.JSON)
     private UserData userData;
 
@@ -37,6 +39,7 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private String birthdate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private String registrationDate;
 
     @Version

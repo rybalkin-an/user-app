@@ -2,8 +2,10 @@ package com.github.rybalkin_an.app.restassured.user;
 
 import com.github.rybalkin_an.app.restassured.BaseRequest;
 import com.github.rybalkin_an.app.restassured.user.steps.UserApi;
-import com.github.rybalkin_an.app.testdata.TestUser;
+import com.github.rybalkin_an.app.testdata.random.user.RandomUser;
+import com.github.rybalkin_an.app.testdata.random.user.RandomUserParameterResolver;
 import com.github.rybalkin_an.app.user.model.User;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +14,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+@ExtendWith(RandomUserParameterResolver.class)
 public class RestAssuredUserServiceTest extends BaseRequest {
 
     private UserApi userApi;
@@ -23,9 +25,7 @@ public class RestAssuredUserServiceTest extends BaseRequest {
     }
 
     @Test
-    void givenUser_whenPostUser_thenUserCreated(){
-        User givenUser = new TestUser();
-
+    void givenUser_whenPostUser_thenUserCreated(@RandomUser User givenUser){
         User createdUser = userApi.create(givenUser);
 
         validateUser(createdUser, givenUser);
@@ -39,9 +39,7 @@ public class RestAssuredUserServiceTest extends BaseRequest {
     }
 
     @Test
-    void givenCreatedUser_whenGetUsers_thenUserCreated(){
-        User givenUser = new TestUser();
-
+    void givenCreatedUser_whenGetUsers_thenUserCreated(@RandomUser User givenUser){
         userApi.create(givenUser);
 
         User createdUser = userApi.findAll()
@@ -53,9 +51,7 @@ public class RestAssuredUserServiceTest extends BaseRequest {
     }
 
     @Test
-    void givenCreatedUser_whenDeleteUser_then204(){
-        User givenUser = new TestUser();
-
+    void givenCreatedUser_whenDeleteUser_then204(@RandomUser User givenUser){
         userApi.create(givenUser);
 
         UUID id = userApi.findAll()
